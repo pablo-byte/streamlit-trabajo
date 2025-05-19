@@ -246,5 +246,33 @@ with c3_f1:
 # st.subheader("Análisis Económico")
 # st.write("Visualización de tendencias y relaciones")
 
+#########################################################
+# SECCIÓN DE ANÁLISIS DE INGRESOS
+#########################################################
+
+st.subheader("Análisis de Ingresos por Producto y Sucursal")
+
+# Crear el gráfico de barras apiladas
+pivot_data = df.pivot_table(
+    values="gross income", index="Product line", columns="Branch", aggfunc="sum"
+)
+
+# Crear la figura con el tamaño especificado
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Crear el gráfico de barras apiladas
+pivot_data.plot(kind="bar", stacked=True, ax=ax)
+
+# Personalizar el gráfico
+plt.title("Ingreso Bruto por Línea de Producto y Sucursal")
+plt.xlabel("Línea de producto")
+plt.ylabel("Ingreso bruto total")
+plt.legend(title="Sucursal")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
+
 st.markdown("---")
 st.caption("Trabajo Grupal | Datos: data.csv")
