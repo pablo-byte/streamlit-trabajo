@@ -72,7 +72,7 @@ except ValueError:
 branches = st.sidebar.multiselect(
     "Branch",
     options=["A", "B", "C"],
-    default=["A"],
+    default=["A", "B"],
     help="Selecciona la sucursal",
 )
 
@@ -101,6 +101,7 @@ product_line = st.sidebar.multiselect(
         "Food and beverages",
         "Fashion accessories",
     ],
+    default=["Health and beauty", "Electronic accessories"],
     help="Selecciona la linea de productos",
 )
 
@@ -117,22 +118,14 @@ payment_type = st.sidebar.multiselect(
 # Filtramos los datos según el rango de años y la fecha seleccionada
 # df_filtrado = df[(df["Year"] >= anio_inicio) & (df["Year"] <= anio_fin)]
 
-# Aplicar filtro de fecha si es válida
-"""if fecha_valida:
-    df_filtrado = df_filtrado[df_filtrado["Date"].dt.date == fecha_dt.date()]
-    if df_filtrado.empty:
-        st.warning("No hay datos disponibles para la fecha seleccionada")
-
-# Título principal del dashboard
-st.title("📊 Dashboard Macroeconómico")
-st.write(f"Datos económicos de EE.UU. ({anio_inicio}-{anio_fin})")"""
+st.header("Título principal del dashboard")
 
 # #######################################################
 # # SECCIÓN DE MÉTRICAS (PRIMERA FILA)
 # #######################################################
 
 # Mostramos métricas del último trimestre disponible
-st.subheader("Último cuarter registrado")
+st.subheader("Graficos de torta")
 
 # Obtenemos los datos del último trimestre
 # ultimo = df_filtrado.iloc[-1]
@@ -141,20 +134,6 @@ st.subheader("Último cuarter registrado")
 # Creamos tres columnas para las métricas principales
 col1, col2, col3 = st.columns(3)
 
-# Mostramos las métricas con formato adecuado
-"""col1.metric(
-    "PIB (GDP)",
-    f"${ultimo['gdp']:,.0f} Bill",
-    help=f"Producto Interno Bruto en {fecha_ultimo}",
-)
-col2.metric(
-    "Desempleo", f"{ultimo['unemp']:.1f}%", help=f"Tasa de desempleo en {fecha_ultimo}"
-)
-col3.metric(
-    "Inflación",
-    f"{ultimo['inflation']:.1f}%",
-    help=f"Tasa de inflación en {fecha_ultimo}",
-)"""
 
 #########################################################
 # SECCIÓN DE GRÁFICOS (SEGUNDA FILA)
@@ -163,7 +142,6 @@ col3.metric(
 # Sección: Composición del PIB
 # st.subheader("Composición del PIB")
 
-# Dividimos la pantalla en dos columnas (proporción 7:3)
 c1_f1, c2_f1, c3_f1 = st.columns(3)
 
 with c1_f1:
@@ -269,6 +247,30 @@ plt.xlabel("Línea de producto")
 plt.ylabel("Ingreso bruto total")
 plt.legend(title="Sucursal")
 plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
+
+#########################################################
+# SECCIÓN DE ANÁLISIS DE SATISFACCIÓN
+#########################################################
+
+st.subheader("Distribución de Calificaciones de Clientes")
+
+# Crear figura para el histograma
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Crear el histograma con KDE
+clientes = df["Rating"]
+sns.histplot(data=clientes, bins=20, kde=True, ax=ax)
+
+# Personalizar el gráfico
+plt.title("Distribución de la Calificación de los Clientes")
+plt.xlabel("Calificación")
+plt.ylabel("Frecuencia")
+
+# Ajustar el diseño
 plt.tight_layout()
 
 # Mostrar el gráfico en Streamlit
