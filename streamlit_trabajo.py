@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from datetime import datetime
+from mpl_toolkits.mplot3d import Axes3D
 
 ##########################################################
 # CONFIGURACIÓN DEL DASHBOARD
@@ -276,5 +277,63 @@ plt.tight_layout()
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
+#########################################################
+# SECCIÓN DE ANÁLISIS 3D DE RELACIONES
+#########################################################
+
+st.subheader("Análisis 3D: Ingresos, Cantidad y Satisfacción")
+
+# Seleccionamos las 3 variables
+gross_income = df["gross income"]
+quantity = df["Quantity"]
+rating = df["Rating"]
+
+# Crear figura 3D
+fig = plt.figure(figsize=(12, 8))
+ax = fig.add_subplot(111, projection="3d")
+
+# Scatter plot 3D con colores basados en Gross Income
+scatter = ax.scatter(
+    quantity,
+    rating,
+    gross_income,
+    c=gross_income,
+    cmap=sns.color_palette("viridis", as_cmap=True),
+    s=60,
+    alpha=0.7,
+    edgecolors="w",
+    linewidth=0.5,
+)
+
+# Etiquetas de los ejes
+ax.set_xlabel("Cantidad", fontsize=12, labelpad=10)
+ax.set_ylabel("Rating (1-10)", fontsize=12, labelpad=10)
+ax.set_zlabel("Ingresos Brutos ($)", fontsize=12, labelpad=10)
+ax.set_title("Relación entre Ingresos Brutos, Cantidad y Rating", fontsize=14, pad=20)
+
+# Barra de color
+cbar = plt.colorbar(scatter)
+cbar.set_label("Ingresos Brutos ($)", fontsize=12, rotation=270, labelpad=15)
+
+# Ajustar el diseño
+plt.tight_layout()
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
+
+# Agregar explicación
+st.markdown(
+    """
+Este gráfico 3D muestra la relación entre tres variables importantes:
+- **Cantidad** de productos vendidos
+- **Rating** dado por los clientes (1-10)
+- **Ingresos Brutos** generados
+
+El color de cada punto representa el nivel de ingresos brutos, donde los colores más claros indican mayores ingresos.
+"""
+)
+
 st.markdown("---")
+
+
 st.caption("Trabajo Grupal | Datos: data.csv")
