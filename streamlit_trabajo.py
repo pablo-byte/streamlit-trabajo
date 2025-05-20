@@ -263,12 +263,30 @@ st.pyplot(fig)
 
 st.subheader("Distribución de Calificaciones de Clientes")
 
-# Crear figura para el histograma
-fig, ax = plt.subplots(figsize=(10, 6))
+# Crear figura para el histograma con espacio para colorbar
+fig, (ax, cax) = plt.subplots(1, 2, figsize=(12, 6), 
+                             gridspec_kw={'width_ratios': [20, 1]})
 
-# Crear el histograma con KDE
+# Preparar datos para el histograma coloreado
 clientes = df["Rating"]
-sns.histplot(data=clientes, bins=20, kde=True, ax=ax)
+n, bins, patches = ax.hist(clientes, bins=20, alpha=0.7)
+
+# Crear escala de colores
+fracs = n / n.max()
+norm = plt.Normalize(fracs.min(), fracs.max())
+
+# Aplicar colores a las barras
+for thisfrac, thispatch in zip(fracs, patches):
+    color = plt.cm.viridis(norm(thisfrac))
+    thispatch.set_facecolor(color)
+
+# Agregar KDE
+sns.kdeplot(data=clientes, color='red', ax=ax, linewidth=2)
+
+# Agregar colorbar
+sm = plt.cm.ScalarMappable(cmap=plt.cm.viridis, norm=norm)
+sm.set_array([])
+fig.colorbar(sm, cax=cax, label='Frecuencia Relativa')
 
 # Personalizar el gráfico
 plt.title("Distribución de la Calificación de los Clientes")
