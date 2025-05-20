@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from datetime import datetime
-from mpl_toolkits.mplot3d import Axes3D
 
 ##########################################################
 # CONFIGURACIÓN DEL DASHBOARD
@@ -112,6 +111,11 @@ payment_type = st.sidebar.multiselect(
     default=["Cash"],
     help="Selecciona forma de pago",
 )
+
+rating_ini, rating_fin = st.sidebar.slider(
+    "Rango de Rating", 1, 10, (1, 10)
+)
+
 # ##################################################
 # # FILTRADO DE DATOS
 # ##################################################
@@ -283,10 +287,16 @@ st.pyplot(fig)
 
 st.subheader("Análisis 3D: Ingresos, Cantidad y Satisfacción")
 
-# Seleccionamos las 3 variables
-gross_income = df["gross income"]
-quantity = df["Quantity"]
-rating = df["Rating"]
+# Filtrar datos según el rango de rating seleccionado
+df_filtered = df[
+    (df["Rating"] >= rating_ini) & 
+    (df["Rating"] <= rating_fin)
+]
+
+# Seleccionamos las 3 variables del DataFrame filtrado
+gross_income = df_filtered["gross income"]
+quantity = df_filtered["Quantity"]
+rating = df_filtered["Rating"]
 
 # Crear figura 3D
 fig = plt.figure(figsize=(12, 8))
